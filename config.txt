@@ -2,44 +2,44 @@
 ### /_dooropen function start  #################
 ##################################################
 guest:/open cell = >>>
-@opentimer = import('opendoor.opentime')
-if(equals(@opentimer, 'off')) {
-die(color(4).'Too late. You were not fast enough. Or this is just not the time to do it!')
-}
-if(equals(@opentimer, 'on')) {
-@verify = _combinelist()
-@player = player()
+	@opentimer = import('opendoor.opentime')
+		if(equals(@opentimer, 'off')) {
+			die(color(4).'Too late. You were not fast enough. Or this is just not the time to do it!')
+		}
+		if(equals(@opentimer, 'on')) {
+			@verify = _combinelist()
+			@player = player()
 ##if the player isnt in a game##
-if(!array_contains(@verify, @player)) {
-die(color(4).'You need to be ingame to use this command')
-}
-@whatlist = _whatlist(@player)
-@number = import('opendoor.number')
-if(equals(@number, @whatlist)) {
-export('opendoor.wetimer', 'on')
-_dooropen(@whatlist)
-export('opendoor.opentime', 'off')
-} else {
-die(color(4)'You are not in the good Game to use this command')
-} 
-}
+				if(!array_contains(@verify, @player)) {
+					die(color(4).'You need to be ingame to use this command')
+				}
+			@whatlist = _whatlist(@player)
+			@number = import('opendoor.number')
+				if(equals(@number, @whatlist)) {
+					export('opendoor.wetimer', 'on')
+					_dooropen(@whatlist)
+					export('opendoor.opentime', 'off')
+				} else {
+						die(color(4)'You are not in the good Game to use this command')
+					} 
+		}
 <<<
 
 ##################################################
 ### To join C&R game #############################
 ##################################################
 guest:/cr join [$jailnum=''] = >>>
-@jailnum = $jailnum
+	@jailnum = $jailnum
 ### if no game number are specified. **Could select random available game if nothing specified.** ###
-@player = player()
-if(equals(@jailnum, '')) {
-	die(color(2).'You need to Specify the game number, '.get_value('ident.jail.a').','get_value('ident.jail.b')' or' get_value('ident.jail.c'))
-}
-if(!array_contains(array(get_value('ident.jail.a'), get_value('ident.jail.b'), get_value('ident.jail.c')), @jailnum)) {
-die(color(2).'You need to chose between '.get_value('ident.jail.a').','get_value('ident.jail.b')' or' get_value('ident.jail.c'))
-} else {
-_crjoin(@player, @jailnum)
-}
+	@player = player()
+		if(equals(@jailnum, '')) {
+			die(color(2).'You need to Specify the game number, '.get_value('ident.jail.a').','get_value('ident.jail.b')' or' get_value('ident.jail.c'))
+		}
+		if(!array_contains(array(get_value('ident.jail.a'), get_value('ident.jail.b'), get_value('ident.jail.c')), @jailnum)) {
+			die(color(2).'You need to chose between '.get_value('ident.jail.a').','get_value('ident.jail.b')' or' get_value('ident.jail.c'))
+		} else {
+				_crjoin(@player, @jailnum)
+		}
 <<<
 
 ##################################################
@@ -47,22 +47,22 @@ _crjoin(@player, @jailnum)
 ##################################################
 
 guest:/cr leave = >>>
-@verify = _combinelist()
-@leavename = player()
+	@verify = _combinelist()
+	@leavename = player()
 ##if the player isnt in a game##
-if(!array_contains(@verify, @leavename)) {
-die(color(4).'You need to be ingame to use this command')
-}
-@whatlist = _whatlist(@leavename)
-@playerlist = get_value('jail.list.'.@whatlist)
-@copslist = get_value('jail.cops.'.@whatlist)
-set_ploc(@leavename, get_value('ident.jail.spawn'))
-_remove_player(@leavename, @whatlist)
-if(array_contains(@copslist, @leavename)) {
-_remove_cops(@leavename, @whatlist, @copslist)
-broadcast(color(2).'A cop left the game #'.@whatlist'! type /cops to be a Cop!!')
-die()
-}
+		if(!array_contains(@verify, @leavename)) {
+			die(color(4).'You need to be ingame to use this command')
+		}
+		@whatlist = _whatlist(@leavename)
+		@playerlist = get_value('jail.list.'.@whatlist)
+		@copslist = get_value('jail.cops.'.@whatlist)
+		set_ploc(@leavename, get_value('ident.jail.spawn'))
+		_remove_player(@leavename, @whatlist)
+			if(array_contains(@copslist, @leavename)) {
+				_remove_cops(@leavename, @whatlist, @copslist)
+				broadcast(color(2).'A cop left the game #'.@whatlist'! type /cops to be a Cop!!')
+				die()
+			}
 <<<
 
 
@@ -71,139 +71,139 @@ die()
 ##################################################
 
 guest:/cops = >>>
-@copsname = player()
-@whatlist = _whatlist(player())
-@playerlist = get_value('jail.list.'.@whatlist)
-@verify = _combinelist()
+	@copsname = player()
+	@whatlist = _whatlist(player())
+	@playerlist = get_value('jail.list.'.@whatlist)
+	@verify = _combinelist()
 ##if the player is in a game##
-if(array_contains(@verify, @copsname)) {
+		if(array_contains(@verify, @copsname)) {
 #### When the timer before start of the game is ON ####
-if(equals(get_value('timer.cops.'.@whatlist), 'on')) {
-@randomcops = get_value('random.cops.'.@whatlist)
-if(array_contains(@randomcops, @copsname)) {
-die(color(4).'Your name is already on the list')
-} else {
+			if(equals(get_value('timer.cops.'.@whatlist), 'on')) {
+				@randomcops = get_value('random.cops.'.@whatlist)
+				if(array_contains(@randomcops, @copsname)) {
+					die(color(4).'Your name is already on the list')
+				} else {
 ###Donator part, to get more chance to be the cops###
-if(has_permission(@copsname, 'donator.vip')) {
-array_push(@randomcops, @copsname, @copsname, @copsname)
-}
-if(has_permission(@copsname, 'donator.vip+')) {
-array_push(@randomcops, @copsname, @copsname, @copsname, @copsname, @copsname, @copsname, @copsname)
-}
-array_push(@randomcops, @copsname)
-@randomcops = @randomcops
-store_value('random.cops.'.@whatlist, @randomcops)
-die(color(2).'Your name was added to the list to be a Cop for this round')
-}
-}
+						if(has_permission(@copsname, 'donator.vip')) {
+							array_push(@randomcops, @copsname, @copsname, @copsname)
+						}
+						if(has_permission(@copsname, 'donator.vip+')) {
+							array_push(@randomcops, @copsname, @copsname, @copsname, @copsname, @copsname, @copsname, @copsname)
+						}
+						array_push(@randomcops, @copsname)
+						@randomcops = @randomcops
+						store_value('random.cops.'.@whatlist, @randomcops)
+						die(color(2).'Your name was added to the list to be a Cop for this round')
+					}
+			}
 #### When the timer before start of the game is OFF ####
-if(equals(get_value('timer.cops.'.@whatlist), 'off')) {
-@jailcops = get_value('jail.cops.'.@whatlist)
+				if(equals(get_value('timer.cops.'.@whatlist), 'off')) {
+					@jailcops = get_value('jail.cops.'.@whatlist)
 ## If there is less than 8 players in a game ##
-if(array_size(@playerlist) <= '8') {
-if(array_size(@jailcops) < '1') {
-_newcop(@copsname, @whatlist)
-die()
-} else {
-die(color(4).'There is already 1 cop, wait until he leaves the game or more players to join')
-}
-}
+						if(array_size(@playerlist) <= '8') {
+							if(array_size(@jailcops) < '1') {
+								_newcop(@copsname, @whatlist)
+								die()
+							} else {
+									die(color(4).'There is already 1 cop, wait until he leaves the game or more players to join')
+								}
+						}
 ## IF there is more than 8 player in a game, and there can be a second cop ##
-if(array_size(@playerlist) > '8') {
-@jailcopssize = array_size(@jailcops)
-if(@jailcopssize >= '2') {
-die('There is already 2 cops. wait for next round.')
-}
-if(@jailcopssize <= '1' && !array_contains(@jailcops, @copsname)) {
-_newcop(@copsname, @whatlist)
-die()
-} else {
-die(color(4).'You are already a cops, or this possibility have not been scripted yet. please inform mussonking')
-}
-}
-}
-} else {
-die(color(2).'You need to be in a CaR game to be a Cop.')
-}
+						if(array_size(@playerlist) > '8') {
+							@jailcopssize = array_size(@jailcops)
+								if(@jailcopssize >= '2') {
+									die('There is already 2 cops. wait for next round.')
+								}
+								if(@jailcopssize <= '1' && !array_contains(@jailcops, @copsname)) {
+									_newcop(@copsname, @whatlist)
+									die()
+								} else {
+										die(color(4).'You are already a cops, or this possibility have not been scripted yet. please inform mussonking')
+									}
+						}
+				}
+		} else {
+				die(color(2).'You need to be in a CaR game to be a Cop.')
+			}
 <<<
 
 ##################################################
 ###  /copkick command   ###########################
 ##################################################
 guest:/copkick [$name=''] = >>>
-@copname = $name
-@player = player()
-@whatlist = _whatlist(@player)
-@verify = _combinelist()
-@kickcopname = get_value('kick.name.'.@whatlist)
-@votename = get_value('jail.vote.'.@whatlist)
-if(!array_contains(@verify, @player)) {
-die(color(4).'You need to be ingame to use that command')
-}
-if(equals(@copname, '')) {
-if(equals(@kickcopname, 'none')) {
-die(color(4).'There is no vote running in your game right now Type /copkick <cop name> to start one')
-}
-if(array_contains(@votename , @player)) {
-die(color(4).'You already voted')
-}
-@votenum = get_value('vote.number.'.@whatlist)
-@votenum = add(@votenum, 1)
-array_push(@votename, @player)
-store_value('jail.vote.'.@whatlist, @votename)
-store_value('vote.number.'.@whatlist, @votenum)
-die(color(6).'Your vote as been added.')
-}
-@jailcops = get_value('jail.cops.'.@whatlist)
-if(!array_contains_ic(@jailcops, @copname)) {
-die(color(4).'There is no cop with that name in game #'.@whatlist)
-}
-if(equals(get_value('timer.cooldown.'.@whatlist), 'on')) {
-die(color(4).'A vote happened few minutes ago, the cooldown is still on.')
-}
-@votename = get_value('jail.vote.'.@whatlist)
-if(array_contains(@votename, @player)) {
-die(color(4).'You already voted')
-}
-if(equals(get_value('timer.kick.'.@whatlist), 'on')) {
-if(!equals_ic(@copname, @kickcopname)) {
-die(color(4).'There is already a kick vote for '@kickcopname)
-}
-@votenum = get_value('vote.number.'.@whatlist)
-@votenum = add(@votenum, 1)
-array_push(@votename, @player)
-store_value('jail.vote.'.@whatlist, @votename)
-store_value('vote.number.'.@whatlist, @votenum) 
- }
-if(equals(get_value('timer.kick.'.@whatlist), 'off')) {
-store_value('timer.kick.'.@whatlist, 'on')
-store_value('kick.name.'.@whatlist, @copname)
-store_value('vote.number.'.@whatlist, 1)
-array_push(@votename, @player)
-store_value('jail.vote.'.@whatlist, @votename)
-broadcast(color(6).'A Vote for kicking' @copname 'as cop Just started in game #'.@whatlist'! type '.color(4)'/copkick' color(6)'to vote')
-set_timeout(30000, closure(
-broadcast(color(6).'30 seconds left to the vote in game #'.@whatlist'! Type '.color(4)'/copkick' color(6)'to vote')
-set_timeout(30000, closure(
-@votenum = get_value('vote.number.'.@whatlist)
-@listsize = get_value('jail.list.'.@whatlist)
-store_value('kick.name.'.@whatlist, 'none')
-store_value('vote.number.'.@whatlist, '0')
-store_value('jail.vote.'.@whatlist, array())
-store_value('timer.kick.'.@whatlist, 'off')
-store_value('timer.cooldown.'.@whatlist, 'on')
-if(@votenum > divide(array_size(@listsize), 2)) {
-_kickcop(@copname, @whatlist)
-}
-if(@votenum <= divide(array_size(@listsize), 2)) {
-broadcast(color(2)'There was not enough vote to kick the cop.')
-}
-set_timeout(150000, closure(
-store_value('timer.cooldown.'.@whatlist, 'off')
-))
-))
-))
-}
+	@copname = $name
+	@player = player()
+	@whatlist = _whatlist(@player)
+	@verify = _combinelist()
+	@kickcopname = get_value('kick.name.'.@whatlist)
+	@votename = get_value('jail.vote.'.@whatlist)
+		if(!array_contains(@verify, @player)) {
+			die(color(4).'You need to be ingame to use that command')
+		}
+		if(equals(@copname, '')) {
+			if(equals(@kickcopname, 'none')) {
+				die(color(4).'There is no vote running in your game right now Type /copkick <cop name> to start one')
+			}
+				if(array_contains(@votename , @player)) {
+					die(color(4).'You already voted')
+				}
+			@votenum = get_value('vote.number.'.@whatlist)
+			@votenum = add(@votenum, 1)
+			array_push(@votename, @player)
+			store_value('jail.vote.'.@whatlist, @votename)
+			store_value('vote.number.'.@whatlist, @votenum)
+			die(color(6).'Your vote as been added.')
+		}
+	@jailcops = get_value('jail.cops.'.@whatlist)
+		if(!array_contains_ic(@jailcops, @copname)) {
+			die(color(4).'There is no cop with that name in game #'.@whatlist)
+		}
+		if(equals(get_value('timer.cooldown.'.@whatlist), 'on')) {
+			die(color(4).'A vote happened few minutes ago, the cooldown is still on.')
+		}
+		@votename = get_value('jail.vote.'.@whatlist)
+			if(array_contains(@votename, @player)) {
+				die(color(4).'You already voted')
+			}
+			if(equals(get_value('timer.kick.'.@whatlist), 'on')) {
+				if(!equals_ic(@copname, @kickcopname)) {
+					die(color(4).'There is already a kick vote for '@kickcopname)
+				}
+				@votenum = get_value('vote.number.'.@whatlist)
+				@votenum = add(@votenum, 1)
+				array_push(@votename, @player)
+				store_value('jail.vote.'.@whatlist, @votename)
+				store_value('vote.number.'.@whatlist, @votenum) 
+			}
+			if(equals(get_value('timer.kick.'.@whatlist), 'off')) {
+				store_value('timer.kick.'.@whatlist, 'on')
+				store_value('kick.name.'.@whatlist, @copname)
+				store_value('vote.number.'.@whatlist, 1)
+				array_push(@votename, @player)
+				store_value('jail.vote.'.@whatlist, @votename)
+				broadcast(color(6).'A Vote for kicking' @copname 'as cop Just started in game #'.@whatlist'! type '.color(4)'/copkick' color(6)'to vote')
+					set_timeout(30000, closure(
+						broadcast(color(6).'30 seconds left to the vote in game #'.@whatlist'! Type '.color(4)'/copkick' color(6)'to vote')
+							set_timeout(30000, closure(
+								@votenum = get_value('vote.number.'.@whatlist)
+								@listsize = get_value('jail.list.'.@whatlist)
+								store_value('kick.name.'.@whatlist, 'none')
+								store_value('vote.number.'.@whatlist, '0')
+								store_value('jail.vote.'.@whatlist, array())
+								store_value('timer.kick.'.@whatlist, 'off')
+								store_value('timer.cooldown.'.@whatlist, 'on')
+									if(@votenum > divide(array_size(@listsize), 2)) {
+										_kickcop(@copname, @whatlist)
+									}
+									if(@votenum <= divide(array_size(@listsize), 2)) {
+										broadcast(color(2)'There was not enough vote to kick the cop.')
+									}
+										set_timeout(150000, closure(
+											store_value('timer.cooldown.'.@whatlist, 'off')
+										))
+							))
+					))
+			}
 
 
 <<<
@@ -212,64 +212,63 @@ store_value('timer.cooldown.'.@whatlist, 'off')
 ##################################################
 
 mod:/mod [$command=''] [$var=''] = >>>
-if(has_permission(player(), 'essentials.mute')) {
-@command = $command
-@variable = $var
-@vaiable2 = $var2
-if(equals(@command, '')){
-die(color(e).'You have the choice between tp, end, kick, cop')
-}
+	if(has_permission(player(), 'essentials.mute')) {
+		@command = $command
+		@variable = $var
+		@vaiable2 = $var2
+			if(equals(@command, '')){
+				die(color(e).'You have the choice between tp, end, kick, cop')
+			}	
 ##### /mod kick *  kick a specified cop #####
-if(equals(@command, 'kick')) {
-if(equals(@variable, '')) {
-die(color(e).'Please specify a Cop name. This fonction is ONLY good for cops!!')
-}
-@whatlist = _whatlist(@variable)
-_kickcop(@variable, @whatlist)
-die(color(e).@variable 'returned into a jail as a robber!')
-}
+			if(equals(@command, 'kick')) {
+				if(equals(@variable, '')) {
+					die(color(e).'Please specify a Cop name. This fonction is ONLY good for cops!!')
+				}
+				@whatlist = _whatlist(@variable)
+				_kickcop(@variable, @whatlist)
+				die(color(e).@variable 'returned into a jail as a robber!')
+			}
 ##### /mod end *  end a specified game #####
-if(equals(@command, 'end')) {
-if(equals(@variable, '')) {
-die(color(e).'You need to specify a game number!')
-}
-_endgame('none', @variable)
-die(color(e).'Ending game #'.@variable' right now.')
-}
-@verify = _combinelist()
-@player = player()
-if(array_contains(@verify, @player)) {
-die(color(4).'Type /cr leave before using this command!')
-}
+			if(equals(@command, 'end')) {
+				if(equals(@variable, '')) {
+					die(color(e).'You need to specify a game number!')
+				}
+				_endgame('none', @variable)
+				die(color(e).'Ending game #'.@variable' right now.')
+			}
+		@verify = _combinelist()
+		@player = player()
+			if(array_contains(@verify, @player)) {
+				die(color(4).'Type /cr leave before using this command!')
+			}
 ##### /mod tp *  Teleport in a specified game to manage it.  #####
-if(equals(@command, 'tp')) {
-if(equals(@variable, '')) {
-die(color(e).'You need to specify a game number!')
-}
-msg('test')
-sudo('/ewarp jail'.@variable @player)
-sudo('/gm 1' @player)
-sudo('/give' @player '345 1')
-die(color(e).'You have been teleported in jail #'.@variable)
-}
+			if(equals(@command, 'tp')) {
+				if(equals(@variable, '')) {
+					die(color(e).'You need to specify a game number!')
+				}
+				sudo('/ewarp jail'.@variable @player)
+				sudo('/gm 1' @player)
+				sudo('/give' @player '345 1')
+				die(color(e).'You have been teleported in jail #'.@variable)
+			}
 ##### /mod cop * Force someone to be a cop by randomly kicking a current cop #####
-if(equals(@command, 'cop')) {
-if(equals(@variable, '')) {
-die(color(e).'You need to specify a name that is not already a cop!')
-}
-@array = array('1', '2')
-if(array_size(@array) <= 0){
-_newcop(@variable, @whatlist)
-die(@variable 'was assigned as new cop.')
-}
-@num = array_rand(@array, 1, false)[0]
-@whatlist = _whatlist(@variable)
-@copslist = get_value('jail.cops.'.@whatlist)
-@chosencop = array_get(@copslist, @num)
-_modkickcop(@chosencop, @whatlist)
-_newcop(@variable, @whatlist)
-}
-}
+			if(equals(@command, 'cop')) {
+				if(equals(@variable, '')) {
+					die(color(e).'You need to specify a name that is not already a cop!')
+				}
+				@array = array('1', '2')
+					if(array_size(@array) <= 0){
+						_newcop(@variable, @whatlist)
+						die(@variable 'was assigned as new cop.')
+					}
+					@num = array_rand(@array, 1, false)[0]
+					@whatlist = _whatlist(@variable)
+					@copslist = get_value('jail.cops.'.@whatlist)
+					@chosencop = array_get(@copslist, @num)
+					_modkickcop(@chosencop, @whatlist)
+					_newcop(@variable, @whatlist)
+			}
+	}
 
 <<<
 
@@ -277,24 +276,24 @@ _newcop(@variable, @whatlist)
 ###  /cr top command   ###########################
 ##################################################
 guest:/cr top [$list=''] = >>>
-@list = $list
-if(equals(@list, '')) {
-for(assign(@a, 1), @a < 13, @a++) {
-msg(color(5)@a.'-'.get_value('top.win.'.@a)[4..])
-}
-}
-if(equals(@list, 'me')) {
-msg(color(5).'You have a total of:' get_value('win.'.player())' win(s)')
-}
+	@list = $list
+		if(equals(@list, '')) {
+			for(assign(@a, 1), @a < 13, @a++) {
+				msg(color(5)@a.'-'.get_value('top.win.'.@a)[4..])
+			}
+		}
+		if(equals(@list, 'me')) {
+			msg(color(5).'You have a total of:' get_value('win.'.player())' win(s)')
+		}
 <<<
 
 ##################################################
 ###  /crplace    #################################
 ##################################################
 guest:/crplace = >>>
-for(@i = get_value('ident.jail.a'), @i < add(get_value('ident.jail.c'), 1), @i++,
-	msg(color(5).'Game #'.@i array_size(get_value('jail.list.'.@i)).'/16')
-)
+	for(@i = get_value('ident.jail.a'), @i < add(get_value('ident.jail.c'), 1), @i++,
+		msg(color(5).'Game #'.@i array_size(get_value('jail.list.'.@i)).'/16')
+	)
 <<<
 
 
@@ -302,13 +301,13 @@ for(@i = get_value('ident.jail.a'), @i < add(get_value('ident.jail.c'), 1), @i++
 ###  /help command   ###########################
 ##################################################
 guest:/help = >>>
-msg(color(b).'/cr join <game number>'color(9).' - Join the selected C&R game.')
-msg(color(b).'/cr leave'color(9).' - Leave the current game and teleport you to spawn.')
-msg(color(b).'/cops'color(9).' - Add you to the Cops random list or assign you as the current Cop')
-msg(color(b).'/copkick <Cop name>'color(9).' - Start a vote to kick the Cop.')
-msg(color(b).'/open cell'color(9).' - Use this command when you see the -open cell- Broadcast')
-msg(color(b).'/crplace'color(9).' - Show The number of player in each games.')
-msg(color(b).'/crtop'color(9).' - Show the 5 best robbers on the actual server.')
+	msg(color(b).'/cr join <game number>'color(9).' - Join the selected C&R game.')
+	msg(color(b).'/cr leave'color(9).' - Leave the current game and teleport you to spawn.')
+	msg(color(b).'/cops'color(9).' - Add you to the Cops random list or assign you as the current Cop')
+	msg(color(b).'/copkick <Cop name>'color(9).' - Start a vote to kick the Cop.')
+	msg(color(b).'/open cell'color(9).' - Use this command when you see the -open cell- Broadcast')
+	msg(color(b).'/crplace'color(9).' - Show The number of player in each games.')
+	msg(color(b).'/crtop'color(9).' - Show the 5 best robbers on the actual server.')
 <<<
 
 ##################################################
@@ -316,15 +315,15 @@ msg(color(b).'/crtop'color(9).' - Show the 5 best robbers on the actual server.'
 ##################################################
 
 guest:/donate [$f2=''] = >>>
-@donate = $f2
-if(equals(@donate, ''),
-sudo('/say' player()', Donator Shop link: http://dragonsdoom.buycraft.net/category/167947')
-msg(color(4).'Donator Shop link: http://dragonsdoom.buycraft.net/category/167947')
-die()),
-ifelse(not(equals(@donate, '')) && if(has_permission(player(), 'essentials.mute'),
-sudo('/say' @donate', Donator Shop link: http://dragonsdoom.buycraft.net/category/167947')),
+	@donate = $f2
+		if(equals(@donate, ''),
+			sudo('/say' player()', Donator Shop link: http://dragonsdoom.buycraft.net/category/167947')
+			msg(color(4).'Donator Shop link: http://dragonsdoom.buycraft.net/category/167947')
+			die()),
+		ifelse(not(equals(@donate, '')) && if(has_permission(player(), 'essentials.mute'),
+			sudo('/say' @donate', Donator Shop link: http://dragonsdoom.buycraft.net/category/167947')),
 
-sudo('/say' player()', Donator Shop link: http://dragonsdoom.buycraft.net/category/167947'))
+			sudo('/say' player()', Donator Shop link: http://dragonsdoom.buycraft.net/category/167947'))
 <<<
 
 
@@ -333,21 +332,10 @@ sudo('/say' player()', Donator Shop link: http://dragonsdoom.buycraft.net/catego
 ##################################################
 
 guest:/updatestats = >>>
-if(has_permission(player(), 'essentials.mute')){
-_updatestats()
-die(color(2).'Stats are being updated.')
-} else {
-die(color(4).'You dont have access to that command.')
-}
-<<<
-
-guest:/away = >>>
-if(has_permission(player(), 'essentials.afk')) {
-sudo('/eafk')
-}
-<<<
-guest:/brb = >>>
-if(has_permission(player(), 'essentials.afk')) {
-sudo('/eafk')
-}
+	if(has_permission(player(), 'essentials.mute')){
+		_updatestats()
+		die(color(2).'Stats are being updated.')
+	} else {
+			die(color(4).'You dont have access to that command.')
+		}
 <<<
