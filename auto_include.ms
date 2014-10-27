@@ -1,3 +1,8 @@
+#===============================================================================
+#
+#   Sample external MethodScript include
+#
+#===============================================================================
 
 ######## _dooropen procedure open the door on each maps each 5 minutes for 10 seconds#################################
 ######## _dooropen procedure open the door on each maps each 5 minutes for 10 seconds#################################
@@ -49,14 +54,12 @@ proc(_randomcop, @whatlist,
 		}
 		@cops1 = array_rand(@randomcop, 1, false)[0]
 		array_remove_values(@randomcop, @cops1)
-		@randomcop = @randomcop
 		array_push(@jailcops, @cops1)
-		@jailcops = @jailcops
 			if(array_size(@randomcop) <= 0 || array_size(@jaillist) < 8) {
 				foreach(@jailcops, @name) {
 					sudo('/ewarp' @jail @name)
 					sudo('/kit cops' @name)
-					set_pmode(@copsname, 'SURVIVAL')
+					set_pmode(@name, 'SURVIVAL')
 					team_add_player('cops', @name)
 				}
 				store_value('jail.cops.'.@whatlist, @jailcops)
@@ -67,7 +70,6 @@ proc(_randomcop, @whatlist,
 			} else {
 					@cops2 = array_rand(@randomcop, 1, false)[0]
 					array_push(@jailcops, @cops2)
-					@jailcops = @jailcops
 					store_value('jail.cops.'.@whatlist, @jailcops)
 						foreach(@jailcops, @name) {
 							sudo('/ewarp' @jail @name)
@@ -86,7 +88,7 @@ proc(_randomcop, @whatlist,
 proc(_newcop, @copsname, @num,
 	@jailcops = get_value('jail.cops.'.@num)
 	array_push(@jailcops, @copsname)
-	export('doorid.'.@num, @doorid)
+	#export('doorid.'.@num, @doorid)
 	store_value('jail.cops.'.@num, @jailcops)
 	sudo('/ewarp jail'.@num @copsname)
 	sudo('/kit cops' @copsname)
@@ -132,15 +134,12 @@ proc(_whatlist, @whatname,
 	@whatlist3 = get_value('jail.list.'.get_value('ident.jail.c'))
 		if(array_contains(@whatlist1, @whatname)) {
 			return(get_value('ident.jail.a'))
-			die()
 		}
 		if(array_contains(@whatlist2, @whatname)) {
 			return(get_value('ident.jail.b'))
-			die()
 		}
 		if(array_contains(@whatlist3, @whatname)) {
 			return(get_value('ident.jail.c'))
-			die()
 		} else {
 			return('none')
 		}
@@ -155,8 +154,8 @@ proc(_crjoin, @joinname, @jailnum,
 		}
 ##### If the game is already full #####
 	@timerjail = get_value('timer.nojoin.'.@jailnum)
-		if(equals(@timerjail, 'on')) {
-			die(color(4).'Map is reseting, please wait.')
+		if(@timerjail == 'on') {
+			die(color(4).'Map is reseting, please wait..')
 		} 
 		if(array_size(@playerlist) >= 16) {
 ##### If a donator join a fullgame ######
@@ -250,9 +249,11 @@ proc(_endgame, @winname, @whatlist,
 				}
 		}
 ##### END OF CR TOP FUNCTION ########
+
 		store_value('timer.nojoin.'.@whatlist, 'on')
 		store_value('timer.cops.'.@whatlist, 'on')
 		set_timeout(15000, closure(
+
 		store_value('timer.nojoin.'.@whatlist, 'off')))
 		set_timeout(40000, closure(
 		store_value('timer.cops.'.@whatlist, 'off')
@@ -268,7 +269,7 @@ proc(_endgame, @winname, @whatlist,
 			_resetmap(@whatlist)
 			clear_task(get_value('reset.time.'.@whatlist))
 				@id = set_timeout(1180000, closure(
-					broadcast(color(1).'Game will #'.@whatlist' will restart in 1 minutes!')
+					broadcast(color(1).'Game #'.@whatlist' will restart in 1 minutes!')
 						set_timeout(60000, closure(
 							_endgame('none', @whatlist)
 						))
@@ -373,8 +374,6 @@ proc(_updatestats,
 			@winname = array_get(@keys, @index)
 			store_value('top.win.'.@i, @winname @max)
 			array_remove(@number, @index)
-			@number = @number
 			array_remove(@keys, @index)
-			@keys = @keys
 		}
 )

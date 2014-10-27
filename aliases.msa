@@ -1,3 +1,9 @@
+#=========================================================================#
+#
+# Command Helper sample config file
+#
+#=========================================================================#
+
 ##################################################
 ### /_dooropen function start  #################
 ##################################################
@@ -91,7 +97,6 @@ guest:/cops = >>>
 							array_push(@randomcops, @copsname, @copsname, @copsname, @copsname, @copsname, @copsname, @copsname)
 						}
 						array_push(@randomcops, @copsname)
-						@randomcops = @randomcops
 						store_value('random.cops.'.@whatlist, @randomcops)
 						die(color(2).'Your name was added to the list to be a Cop for this round')
 					}
@@ -283,8 +288,24 @@ guest:/cr top [$list=''] = >>>
 			}
 		}
 		if(equals(@list, 'me')) {
-			msg(color(5).'You have a total of:' get_value('win.'.player())' win(s)')
+			@numberWin = get_value('win.'.player())
+				if(@numberWin == null) {
+					msg(color(5).'You don't have any Win Yet!')
+				}
+				if(@numberWin != null) {
+				msg(color(5).'You have a total of:' get_value('win.'.player())'win(s)')
+				}
 		}
+		if(@list != 'me' || @list != '') {
+			@numberWin = get_value('win.'.@list)
+				if(@numberWin == null) {
+					msg(color(5).@list'don't have any Win Yet! (or this username doesn't exist')
+				}
+				if(@numberWin != null) {
+				msg(color(5).@list'Have a total of:' get_value('win.'.player())'win(s)')
+				}
+		}
+		
 <<<
 
 ##################################################

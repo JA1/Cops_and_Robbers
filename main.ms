@@ -1,4 +1,17 @@
 ######################################################
+#
+#   Sample Main file. This file is run when the server
+#   starts up, or the plugin is reloaded. It can be used
+#   as an opportunity to register events or do other things
+#   when the server initially starts. Variables defined here
+#   will go out of scope, so you can't assign() something and
+#   then use it in a command, for instance.
+#
+######################################################
+
+set_timeout(6000, closure(
+))
+######################################################
 ### open doors timer at start  #######################
 ######################################################
 set_timeout(10000, closure(
@@ -13,7 +26,7 @@ set_interval(15000, closure(
 ######################################################
 ### Set all default values at server start############
 ######################################################
-set_timeout(1000, closure(
+set_timeout(9000, closure(
 	_restartarray() 
 	) )
 ######################################################
@@ -93,11 +106,11 @@ bind(player_interact, null, null, @winblock,
 #######################################################
 ###   Kill Bind, protect cops for abusing    ##########
 #######################################################
-bind(player_death, null, array(player: array_merge(get_value('jail.cops.'.get_value('ident.jail.a')),get_value('jail.cops.'.get_value('ident.jail.b')),get_value('jail.cops.'.get_value('ident.jail.c')))), @kill,
-	@killer = @kill['killer']
-	@whatlist = _whatlist(@killer)
-	@coplist = array_merge(get_value('jail.cops.'.get_value('ident.jail.a')),get_value('jail.cops.'.get_value('ident.jail.b')),get_value('jail.cops.'.get_value('ident.jail.c')))
-		if(array_contains(@coplist, @killer)) {
-			sudo('/ekick' @killer 'You cant kill the cop as a cop!')
-		}
-)
+#bind(player_death, null, array(player: array_merge(get_value('jail.cops.'.get_value('ident.jail.a')),get_value('jail.cops.'.get_value('ident.jail.b')),get_value('jail.cops.'.get_value('ident.jail.c')))), @kill,
+#	@killer = @kill['killer']
+#	@whatlist = _whatlist(@killer)
+#	@coplist = array_merge(get_value('jail.cops.'.get_value('ident.jail.a')),get_value('jail.cops.'.get_value('ident.jail.b')),get_value('jail.cops.'.get_value('ident.jail.c')))
+#		if(array_contains(@coplist, @killer)) {
+#			sudo('/ekick' @killer 'You cant kill the cop as a cop!')
+#		}
+#)
